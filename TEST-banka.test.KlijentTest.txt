@@ -1,0 +1,8 @@
+Testsuite: banka.test.KlijentTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0,044 sec
+
+Testcase: testProsjekStanja took 0,016 sec
+Testcase: testToString took 0,016 sec
+Testcase: testPunoIme took 0 sec
+Testcase: testKreiranjeKlijenta took 0 sec
+Testcase: testNajbogatijiKlijent took 0,012 sec

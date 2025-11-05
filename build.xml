@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="BankaApp" default="run" basedir=".">
+
+    <!-- Putanje -->
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="bin"/>
+    <property name="dist.dir" value="dist"/>
+    <property name="test.build.dir" value="bin-test"/>
+    <property name="main.class" value="banka.model.Main"/>
+
+    <!-- Očisti build folder -->
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <mkdir dir="${build.dir}"/>
+    </target>
+
+    <!-- Kompajliranje -->
+    <!-- Kompajliranje aplikacije (bez testova) -->
+<target name="compile" depends="clean">
+    <mkdir dir="${build.dir}"/>
+    <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false">
+        <!-- isključi sve ispod src/banka/test/ -->
+        <exclude name="banka/test/**"/>
+    </javac>
+</target>
+<!-- kompajliraj SAMO testove, sa JUnit classpathom -->
+<target name="compile-tests" depends="compile">
+    <mkdir dir="${test.build.dir}"/>
+    <javac srcdir="${src.dir}" destdir="${test.build.dir}" includeantruntime="false">
+        <include name="banka/test/**"/>
+        <classpath>
+            <pathelement path="${build.dir}"/>
+            <fileset dir="lib" includes="**/*.jar"/>
+        </classpath>
+    </javac>
+</target>
+
+<!-- pokreni JUnit 4 testove -->
+<target name="test" depends="compile-tests">
+    <junit printsummary="on" haltonfailure="no" fork="true">
+        <classpath>
+            <pathelement path="${build.dir}"/>
+            <pathelement path="${test.build.dir}"/>
+            <fileset dir="lib" includes="**/*.jar"/>
+        </classpath>
+        <formatter type="plain"/>
+        <batchtest>
+            <fileset dir="${test.build.dir}">
+                <include name="**/*Test.class"/>
+            </fileset>
+        </batchtest>
+    </junit>
+</target>
+
+
+    <!-- Kreiraj izvršni JAR -->
+    <target name="jar" depends="compile">
+        <mkdir dir="${dist.dir}"/>
+        <jar destfile="${dist.dir}/BankaApp.jar" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <!-- Pokreni aplikaciju -->
+    <target name="run" depends="compile">
+        <java classname="${main.class}" classpath="${build.dir}" fork="true"/>
+    </target>
+
+</project>
